@@ -1,0 +1,289 @@
+-- Crear Base de Datos
+CREATE DATABASE dbSportMart;
+USE dbSportMart;
+
+
+/* ===========================================================
+   ROLES (Administrador, Cliente, Vendedor, etc.)
+   ===========================================================*/
+CREATE TABLE tRole(
+    idRole CHAR(36) NOT NULL,                    -- Identificador único del rol (UUID)
+    name VARCHAR(50) NOT NULL,                   -- Nombre del rol: 'Administrador', 'Cliente', 'Vendedor'
+	description VARCHAR(255),
+    createdAt DATETIME NOT NULL,                 -- Fecha y hora de creación del registro
+    updatedAt DATETIME NOT NULL,                 -- Fecha y hora de última actualización
+    PRIMARY KEY(idRole)
+) ENGINE = INNODB;
+
+/* ===========================================================
+   USUARIOS
+   ===========================================================*/
+CREATE TABLE tUser(
+    idUser CHAR(36) NOT NULL,                    -- Identificador único del usuario (UUID)
+    idRole CHAR(36) NOT NULL,                    -- Referencia al rol del usuario
+    firstName VARCHAR(70) NOT NULL,              -- Nombres del usuario
+    lastName VARCHAR(70) NOT NULL,               -- Apellidos del usuario
+    email VARCHAR(150) NOT NULL UNIQUE,          -- Correo electrónico (único)
+    password VARCHAR(255) NOT NULL,              -- Contraseña hasheada
+    phone VARCHAR(20),                           -- Teléfono de contacto
+    address VARCHAR(255),                        -- Dirección de residencia
+    city VARCHAR(100),                           -- Ciudad de residencia
+    postalCode VARCHAR(20),                      -- Código postal
+    province VARCHAR(100),                       -- Provincia/Estado/Región
+    country VARCHAR(100),                        -- País de residencia
+    isActive BOOLEAN NOT NULL DEFAULT TRUE,		 -- Para determinar si un usuario es eliminado solo se le cambia de estado 
+	birthDate DATE,                              -- Fecha de nacimiento
+    createdAt DATETIME NOT NULL,                 -- Fecha y hora de creación de la cuenta
+    updatedAt DATETIME NOT NULL,                 -- Fecha y hora de última actualización
+    FOREIGN KEY(idRole) REFERENCES tRole(idRole)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY(idUser)
+) ENGINE = INNODB;
+
+/* ===========================================================
+   CATEGORÍAS (Ropa, Calzado, Accesorios, etc.)
+   ===========================================================*/
+CREATE TABLE tCategory(
+    idCategory CHAR(36) NOT NULL,                -- Identificador único de categoría (UUID)
+    name VARCHAR(100) NOT NULL,                  -- Nombre de la categoría: 'Zapatillas', 'Camisetas', 'Accesorios'
+    description VARCHAR(255),                    -- Descripción de la categoría
+    productCount INT DEFAULT 0,                  -- Contador de productos en esta categoría
+    createdAt DATETIME NOT NULL,                 -- Fecha y hora de creación
+    updatedAt DATETIME NOT NULL,                 -- Fecha y hora de última actualización
+    PRIMARY KEY(idCategory)
+) ENGINE = INNODB;
+
+
+INSERT INTO tCategory (idCategory, name, description, productCount, createdAt, updatedAt) VALUES
+(UUID(), 'Calzado', 'Zapatos, zapatillas y calzado deportivo', 0, NOW(), NOW()),
+(UUID(), 'Camisetas', 'Camisetas casuales y deportivas', 0, NOW(), NOW()),
+(UUID(), 'Pantalones', 'Pantalones jeans, deportivos y formales', 0, NOW(), NOW()),
+(UUID(), 'Chaquetas', 'Chaquetas, abrigos y prendas de abrigo', 0, NOW(), NOW()),
+(UUID(), 'Accesorios', 'Gorras, bufandas, cinturones y más', 0, NOW(), NOW());
+
+/* ===========================================================
+   MARCAS (Nike, Adidas, Puma, etc.)
+   ===========================================================*/
+CREATE TABLE tBrand(
+    idBrand CHAR(36) NOT NULL,                   -- Identificador único de marca (UUID)
+    name VARCHAR(100) NOT NULL,                  -- Nombre de la marca: 'Nike', 'Adidas', 'Puma'
+    createdAt DATETIME NOT NULL,                 -- Fecha y hora de creación
+    updatedAt DATETIME NOT NULL,                 -- Fecha y hora de última actualización
+    PRIMARY KEY(idBrand)
+) ENGINE = INNODB;
+
+INSERT INTO tBrand (idBrand, name, createdAt, updatedAt) VALUES
+(UUID(), 'Nike', NOW(), NOW()),
+(UUID(), 'Adidas', NOW(), NOW()),
+(UUID(), 'Puma', NOW(), NOW()),
+(UUID(), 'Reebok', NOW(), NOW()),
+(UUID(), 'Under Armour', NOW(), NOW());
+
+
+/* ===========================================================
+   PRODUCTOS
+   ===========================================================*/
+CREATE TABLE tProduct(
+    idProduct CHAR(36) NOT NULL,                 -- Identificador único del producto (UUID)
+    idCategory CHAR(36) NOT NULL,                -- Referencia a la categoría del producto
+    idBrand CHAR(36) NOT NULL,                   -- Referencia a la marca del producto
+    name VARCHAR(150) NOT NULL,                  -- Nombre del producto: 'Zapatillas Running Nike Air Max'
+    description VARCHAR(500),                    -- Descripción detallada del producto
+    price DECIMAL(10,2) NOT NULL,                -- Precio actual de venta
+    oldPrice DECIMAL(10,2),                      -- Precio anterior (para mostrar descuentos)
+    imageUrl VARCHAR(500),                       -- URL de la imagen principal del producto
+    status VARCHAR(20) DEFAULT 'active',         -- Estado: 'active', 'inactive', 'out_of_stock'
+    averageRating DECIMAL(3,2) DEFAULT 0.00,     -- Calificación promedio (0-5)
+    reviewCount INT DEFAULT 0,                   -- Número total de reseñas
+    createdAt DATETIME NOT NULL,                 -- Fecha y hora de creación
+    updatedAt DATETIME NOT NULL,                 -- Fecha y hora de última actualización
+    FOREIGN KEY(idCategory) REFERENCES tCategory(idCategory)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY(idBrand) REFERENCES tBrand(idBrand)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY(idProduct)
+) ENGINE = INNODB;
+
+/* ===========================================================
+   VARIANTES DE PRODUCTOS (Tallas, Colores)
+   ===========================================================*/
+CREATE TABLE tProductVariant(
+    idVariant CHAR(36) NOT NULL,                 -- Identificador único de variante (UUID)
+    idProduct CHAR(36) NOT NULL,                 -- Referencia al producto padre
+    size VARCHAR(20),                            -- Talla: 'S', 'M', 'L', 'XL', '42', '10.5'
+    color VARCHAR(50),                           -- Color: 'Rojo', 'Azul', 'Negro'
+    colorHex VARCHAR(7),                         -- Código hexadecimal del color: '#FF0000'
+    stock INT NOT NULL,                          -- Cantidad disponible en inventario
+    createdAt DATETIME NOT NULL,                 -- Fecha y hora de creación
+    updatedAt DATETIME NOT NULL,                 -- Fecha y hora de última actualización
+    FOREIGN KEY(idProduct) REFERENCES tProduct(idProduct)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY(idVariant)
+) ENGINE = INNODB;
+
+/*
+    Se eliminó el campo stock de la tabla tProduct
+    Se eliminó el campo additionalStock INT DEFAULT 0, de la tabla tProductVariant
+    
+    Se agregó el campo stock a la tabla tProductVariant en lugar del campo additionalStock
+*/
+
+
+/* ===========================================================
+   FAVORITOS (Lista de deseos)
+   ===========================================================*/
+CREATE TABLE tFavorite(
+    idFavorite CHAR(36) NOT NULL,                -- Identificador único del favorito (UUID)
+    idUser CHAR(36) NOT NULL,                    -- Referencia al usuario
+    idProduct CHAR(36) NOT NULL,                 -- Referencia al producto marcado como favorito
+    createdAt DATETIME NOT NULL,                 -- Fecha y hora de agregado a favoritos
+    updatedAt DATETIME NOT NULL,                 -- Fecha y hora de última actualización
+    FOREIGN KEY(idUser) REFERENCES tUser(idUser)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY(idProduct) REFERENCES tProduct(idProduct)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY(idFavorite)
+) ENGINE = INNODB;
+
+
+/* ===========================================================
+   CARRITO DE COMPRAS
+   ===========================================================*/
+CREATE TABLE tCart(
+    idCart CHAR(36) NOT NULL,                    -- Identificador único del carrito (UUID)
+    idUser CHAR(36) NOT NULL,                    -- Referencia al usuario dueño del carrito
+    createdAt DATETIME NOT NULL,                 -- Fecha y hora de creación del carrito
+    updatedAt DATETIME NOT NULL,                 -- Fecha y hora de última actualización
+    FOREIGN KEY(idUser) REFERENCES tUser(idUser)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY(idCart)
+) ENGINE = INNODB;
+
+CREATE TABLE tCartItem(
+    idCartItem CHAR(36) NOT NULL,                -- Identificador único del ítem en carrito (UUID)
+    idCart CHAR(36) NOT NULL,                    -- Referencia al carrito
+    idProduct CHAR(36) NOT NULL,                 -- Referencia al producto
+    idVariant CHAR(36),                          -- Referencia a la variante (si aplica)
+    quantity INT NOT NULL,                       -- Cantidad seleccionada
+    unitPrice DECIMAL(10,2) NOT NULL,            -- Precio unitario al momento de agregar al carrito
+    createdAt DATETIME NOT NULL,                 -- Fecha y hora de agregado al carrito
+    updatedAt DATETIME NOT NULL,                 -- Fecha y hora de última actualización
+    FOREIGN KEY(idCart) REFERENCES tCart(idCart)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY(idProduct) REFERENCES tProduct(idProduct)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY(idVariant) REFERENCES tProductVariant(idVariant)
+        ON DELETE SET NULL ON UPDATE CASCADE,
+    PRIMARY KEY(idCartItem)
+) ENGINE = INNODB;
+
+
+/* ===========================================================
+   PEDIDOS (Órdenes de compra)
+   ===========================================================*/
+CREATE TABLE tOrder(
+    idOrder CHAR(36) NOT NULL,                   -- Identificador único del pedido (UUID)
+    idUser CHAR(36) NOT NULL,                    -- Referencia al usuario que realizó el pedido
+    orderNumber VARCHAR(50) NOT NULL UNIQUE,     -- Número único de pedido: 'ORD-2024-001'
+    orderDate DATETIME NOT NULL,                 -- Fecha y hora del pedido
+    totalAmount DECIMAL(10,2) NOT NULL,          -- Total final a pagar (subtotal + impuestos + envío)
+    subtotal DECIMAL(10,2) NOT NULL,             -- Suma de precios de productos sin impuestos
+    tax DECIMAL(10,2) NOT NULL,                  -- Monto de impuestos
+    shippingCost DECIMAL(10,2) NOT NULL,         -- Costo de envío
+    status VARCHAR(50) NOT NULL,                 -- Estado: 'pending', 'confirmed', 'shipped', 'delivered', 'cancelled'
+    shippingAddress VARCHAR(255),                -- Dirección de envío
+    shippingCity VARCHAR(100),                   -- Ciudad de envío
+    shippingPostalCode VARCHAR(20),              -- Código postal de envío
+    shippingProvince VARCHAR(100),               -- Provincia/Estado de envío
+    shippingCountry VARCHAR(100),                -- País de envío
+    createdAt DATETIME NOT NULL,                 -- Fecha y hora de creación
+    updatedAt DATETIME NOT NULL,                 -- Fecha y hora de última actualización
+    FOREIGN KEY(idUser) REFERENCES tUser(idUser)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY(idOrder)
+) ENGINE = INNODB;
+
+CREATE TABLE tOrderItem(
+    idOrderItem CHAR(36) NOT NULL,               -- Identificador único del ítem en pedido (UUID)
+    idOrder CHAR(36) NOT NULL,                   -- Referencia al pedido
+    idProduct CHAR(36) NOT NULL,                 -- Referencia al producto
+    idVariant CHAR(36),                          -- Referencia a la variante (si aplica)
+    quantity INT NOT NULL,                       -- Cantidad comprada
+    unitPrice DECIMAL(10,2) NOT NULL,            -- Precio unitario al momento de la compra
+    createdAt DATETIME NOT NULL,                 -- Fecha y hora de creación
+    updatedAt DATETIME NOT NULL,                 -- Fecha y hora de última actualización
+    FOREIGN KEY(idOrder) REFERENCES tOrder(idOrder)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY(idProduct) REFERENCES tProduct(idProduct)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY(idVariant) REFERENCES tProductVariant(idVariant)
+        ON DELETE SET NULL ON UPDATE CASCADE,
+    PRIMARY KEY(idOrderItem)
+) ENGINE = INNODB;
+
+/* ===========================================================
+   PAGOS
+   ===========================================================*/
+CREATE TABLE tPayment(
+    idPayment CHAR(36) NOT NULL,                 -- Identificador único del pago (UUID)
+    idOrder CHAR(36) NOT NULL,                   -- Referencia al pedido asociado
+    paymentMethod VARCHAR(50) NOT NULL,          -- Método: 'credit_card', 'debit_card', 'paypal', 'cash'
+    status VARCHAR(50) NOT NULL,                 -- Estado: 'pending', 'completed', 'failed', 'refunded'
+    transactionId VARCHAR(255),                  -- ID de transacción del gateway de pago
+    paymentDate DATETIME NOT NULL,               -- Fecha y hora del pago
+    amount DECIMAL(10,2) NOT NULL,               -- Monto pagado
+    createdAt DATETIME NOT NULL,                 -- Fecha y hora de creación
+    updatedAt DATETIME NOT NULL,                 -- Fecha y hora de última actualización
+    FOREIGN KEY(idOrder) REFERENCES tOrder(idOrder)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY(idPayment)
+) ENGINE = INNODB;
+
+/* ===========================================================
+   RESEÑAS (Comentarios y calificaciones de clientes)
+   ===========================================================*/
+CREATE TABLE tReview(
+    idReview CHAR(36) NOT NULL,                  -- Identificador único de reseña (UUID)
+    idUser CHAR(36) NOT NULL,                    -- Referencia al usuario que escribe la reseña
+    idProduct CHAR(36) NOT NULL,                 -- Referencia al producto reseñado
+    rating INT NOT NULL CHECK (rating BETWEEN 1 AND 5), -- Calificación (1-5 estrellas)
+    comment VARCHAR(500),                        -- Comentario u opinión del usuario
+    reviewDate DATETIME NOT NULL,                -- Fecha y hora de la reseña
+    createdAt DATETIME NOT NULL,                 -- Fecha y hora de creación
+    updatedAt DATETIME NOT NULL,                 -- Fecha y hora de última actualización
+    FOREIGN KEY(idUser) REFERENCES tUser(idUser)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY(idProduct) REFERENCES tProduct(idProduct)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY(idReview)
+) ENGINE = INNODB;
+
+/* ===========================================================
+   ESPECIFICACIONES DE PRODUCTOS
+   ===========================================================*/
+CREATE TABLE tProductSpecification(
+    idSpecification CHAR(36) NOT NULL,           -- Identificador único de especificación (UUID)
+    idProduct CHAR(36) NOT NULL,                 -- Referencia al producto
+    specKey VARCHAR(100) NOT NULL,               -- Clave de especificación: 'Material', 'Peso', 'Garantía'
+    specValue VARCHAR(255) NOT NULL,             -- Valor de especificación: 'Algodón 100%', '500g', '6 meses'
+    createdAt DATETIME NOT NULL,                 -- Fecha y hora de creación
+    updatedAt DATETIME NOT NULL,                 -- Fecha y hora de última actualización
+    FOREIGN KEY(idProduct) REFERENCES tProduct(idProduct)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY(idSpecification)
+) ENGINE = INNODB;
+
+/* ===========================================================
+   IMÁGENES ADICIONALES DE PRODUCTOS
+   ===========================================================*/
+CREATE TABLE tProductImage(
+    idImage CHAR(36) NOT NULL,                   -- Identificador único de imagen (UUID)
+    idProduct CHAR(36) NOT NULL,                 -- Referencia al producto
+    imageUrl VARCHAR(500) NOT NULL,              -- URL de la imagen adicional
+    displayOrder INT DEFAULT 0,                  -- Orden de visualización (0=primera, 1=segunda, etc.)
+    createdAt DATETIME NOT NULL,                 -- Fecha y hora de creación
+    updatedAt DATETIME NOT NULL,                 -- Fecha y hora de última actualización
+    FOREIGN KEY(idProduct) REFERENCES tProduct(idProduct)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY(idImage)
+) ENGINE = INNODB;
