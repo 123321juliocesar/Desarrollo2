@@ -1,0 +1,70 @@
+<div class="login-bg">
+
+  <div class="login-icon">
+      <i class="fa-solid fa-shield-halved"></i>
+    </div>
+
+  <div class="header-title">
+    <h2>Panel de<span>Administración</span></h2>
+    <p>SumaSport Admin Dashboard</p>
+  </div>
+
+  <div class="login-card">
+
+
+    <h2>
+      <i class="fa-solid fa-shield-halved"></i>
+    Acceso Administrativo</h2>
+    <p class="subtitle">Ingresa tus credenciales de administrador</p>
+
+    <div class="alert-box">
+      <i class="fa-solid fa-circle-info"></i>
+      <span>Área restringida. Los accesos son monitoreados y registrados.</span>
+    </div>
+
+    <form (ngSubmit)="login()">
+
+
+      <label class="input-label">Email de Administrador</label>
+      <div class="input-group">
+        <i class="fa-solid fa-envelope"></i>
+        <input type="email" [(ngModel)]="email" name="email"
+               placeholder="admin@sumacsport.com" required>
+      </div>
+
+
+      <label class="input-label">Contraseña</label>
+      <div class="input-group">
+        <i class="fa-solid fa-lock"></i>
+        <input type="password" [(ngModel)]="password" name="password"
+               placeholder="********" required>
+      </div>
+
+    <label class="input-label">Código de Autenticación (2FA)</label>
+<div class="input-group">
+  <i class="fa-solid fa-shield-halved"></i>
+  <input type="number" [(ngModel)]="codigo" name="codigo2fa"
+         placeholder="123456" required>
+</div>
+
+<p class="helper-text">Ingresa el código de autenticación</p>
+
+
+      <div class="terms-box">
+  <label>
+    <input type="checkbox"> Acepto términos y condiciones
+  </label>
+      </div>
+
+
+      <button type="submit" class="btn-login"><i class="fa-solid fa-shield-halved"></i> Acceder al panel</button>
+    </form>
+
+    <div class="forgot-row">
+  <a class="forgot-link" routerLink="/recuperar-contrasena">¿Olvidaste tu contraseña?</a>
+</div>
+
+
+  </div>
+</div>
+

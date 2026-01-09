@@ -1,0 +1,107 @@
+<div class="register-page">
+
+  <div class="text-center mb-3">
+    <img src="assets/logo.png" width="90" alt="Logo">
+    <h2 class="fw-bold mt-2 title-brand">
+      Sumac<span class="text-primary">Sport</span>
+    </h2>
+    <p class="text-muted">crea tu cuenta de usuario</p>
+  </div>
+
+  <div class="registro-container shadow-box">
+
+    <h2 class="form-title">{{ isEditMode ? 'Actualizar Perfil' : 'Registro' }}</h2>
+
+    <form class="form-grid" [formGroup]="crearRegistro" (ngSubmit)="enviarRegistro()">
+
+      <!-- Nombre -->
+      <div class="form-item">
+        <label>Nombre *</label>
+        <input type="text" formControlName="firstName" placeholder="Ingresa tu nombre" />
+        <div class="error" *ngIf="crearRegistro.get('firstName')?.touched && crearRegistro.get('firstName')?.invalid">
+          El nombre es obligatorio.
+        </div>
+      </div>
+
+      <!-- Apellido -->
+      <div class="form-item">
+        <label>Apellido *</label>
+        <input type="text" formControlName="lastName" placeholder="Ingresa tu apellido" />
+        <div class="error" *ngIf="crearRegistro.get('lastName')?.touched && crearRegistro.get('lastName')?.invalid">
+          El apellido es obligatorio.
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-item">
+        <label>Email *</label>
+        <input type="email" formControlName="email" placeholder="correo@example.com" />
+        <div class="error" *ngIf="crearRegistro.get('email')?.touched && crearRegistro.get('email')?.invalid">
+          Ingresa un email válido.
+        </div>
+      </div>
+
+      <!-- Teléfono -->
+      <div class="form-item">
+        <label>Teléfono *</label>
+        <input type="text" formControlName="phone" placeholder="Número de teléfono" />
+        <div class="error" *ngIf="crearRegistro.get('phone')?.touched && crearRegistro.get('phone')?.invalid">
+          El teléfono es obligatorio.
+        </div>
+      </div>
+
+      <!-- Fecha nacimiento -->
+      <div class="form-item">
+        <label>Fecha de nacimiento</label>
+        <input type="date" formControlName="birthDate" />
+      </div>
+
+      <!-- Contraseña -->
+      <div class="form-item">
+        <label>Contraseña {{ isEditMode ? '(Opcional)' : '*' }}</label>
+        <input type="password" formControlName="password"
+          [placeholder]="isEditMode ? 'Dejar en blanco para mantener actual' : 'Ingresa tu contraseña'" />
+        <div class="error" *ngIf="crearRegistro.get('password')?.touched && crearRegistro.get('password')?.invalid">
+          La contraseña es obligatoria.
+        </div>
+      </div>
+
+      <!-- Dirección (fila completa) -->
+      <div class="form-item full">
+        <label>Dirección</label>
+        <input type="text" formControlName="address" placeholder="Dirección" />
+      </div>
+
+      <!-- Ciudad -->
+      <div class="form-item">
+        <label>Ciudad</label>
+        <input type="text" formControlName="city" placeholder="Ciudad" />
+      </div>
+
+      <!-- Código Postal -->
+      <div class="form-item">
+        <label>Código Postal</label>
+        <input type="text" formControlName="postalCode" placeholder="Código Postal" />
+      </div>
+
+      <!-- Provincia -->
+      <div class="form-item">
+        <label>Provincia</label>
+        <input type="text" formControlName="province" placeholder="Provincia" />
+      </div>
+
+      <!-- País -->
+      <div class="form-item">
+        <label>País</label>
+        <input type="text" formControlName="country" placeholder="País" />
+      </div>
+
+      <!-- Botón -->
+      <button class="btn-blue full" type="submit" [disabled]="crearRegistro.invalid">{{ isEditMode ? 'Actualizar Datos'
+        : 'Registrar' }}</button>
+
+    </form>
+
+  </div>
+
+</div>

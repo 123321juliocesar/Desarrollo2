@@ -1,0 +1,54 @@
+<div class="product-card" (click)="onCardClick()" *ngIf="product">
+    <!-- Botón Favorito -->
+    <button class="favorite-btn" [class.is-favorite]="isFavorite" [class.loading]="isLoadingFavorite"
+        (click)="toggleFavorite($event)">
+        <div class="favorite-circle">
+            <i class="fa-solid fa-heart" *ngIf="isFavorite"></i>
+            <i class="fa-regular fa-heart" *ngIf="!isFavorite"></i>
+        </div>
+    </button>
+
+    <!-- Imagen del Producto -->
+    <div class="product-image">
+        <!-- Badge de Descuento -->
+        <div class="discount-badge" *ngIf="hasDiscount()">
+            -{{ getDiscountPercentage() }}%
+        </div>
+        <img [src]="product.imageUrl" [alt]="product.name" loading="lazy">
+    </div>
+
+    <!-- Contenido de la Tarjeta -->
+    <div class="product-content">
+        <!-- Categoría (Uppercase) -->
+        <span class="product-category">{{ product.categoryName?.toUpperCase() || '' }}</span>
+
+        <!-- Nombre del Producto -->
+        <h3 class="product-title">{{ product.name }}</h3>
+
+        <!-- Marca (Lowercase/Gray) -->
+        <span class="product-brand">{{ product.brandName || '' }}</span>
+
+        <!-- Rating con Valor Numérico -->
+        <div class="product-rating">
+            <div class="stars">
+                <i *ngFor="let star of [1,2,3,4,5]" class="fa-star"
+                    [class]="isStarFilled(star) ? 'fa-solid' : 'fa-regular'"></i>
+            </div>
+            <span class="rating-value">{{ product.averageRating.toFixed(1) }}</span>
+            <span class="review-count">({{ product.reviewCount || 0 }})</span>
+        </div>
+
+        <!-- Precios y Acción -->
+        <div class="product-footer">
+            <div class="price-container">
+                <span class="current-price">S/ {{ product.price.toFixed(2) }}</span>
+                <span class="old-price" *ngIf="hasDiscount()">S/ {{ product.oldPrice?.toFixed(2) }}</span>
+            </div>
+
+            <button class="add-cart-btn" (click)="onAddToCart($event)">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span>Añadir</span>
+            </button>
+        </div>
+    </div>
+</div>

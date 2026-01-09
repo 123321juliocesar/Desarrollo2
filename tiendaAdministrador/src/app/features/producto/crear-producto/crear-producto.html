@@ -1,0 +1,104 @@
+<div class="form-container">
+  <h2>Crear producto</h2>
+
+
+  <div class="form-group">
+    <label>Categoría</label>
+    <select [(ngModel)]="producto.idCategory" name="idCategory" required>
+      <option value="" disabled selected>Seleccione una categoría</option>
+      <option *ngFor="let cat of ListarCategorias" [value]="cat.idCategory">
+        {{ cat.name }}
+      </option>
+    </select>
+  </div>
+
+
+  <div class="form-group">
+    <label>Marca</label>
+    <select [(ngModel)]="producto.idBrand" name="idBrand" required>
+      <option value="" disabled selected>Seleccione una marca</option>
+      <option *ngFor="let marca of ListarMarcas" [value]="marca.idBrand">
+        {{ marca.name }}
+      </option>
+    </select>
+  </div>
+
+
+
+  <input type="text" [(ngModel)]="producto.name" placeholder="Nombre del producto" />
+
+  <textarea [(ngModel)]="producto.description" placeholder="Descripción"></textarea>
+
+  <input [(ngModel)]="producto.price" placeholder="Precio" />
+
+  <input [(ngModel)]="producto.oldPrice" placeholder="Precio anterior" />
+
+  <label class="file-label">
+    Subir imagen
+    <input type="file" (change)="subirImagen($event)" hidden #fileInput />
+  </label>
+
+  <img *ngIf="producto.imageUrl" [src]="producto.imageUrl" class="preview" />
+
+  <hr class="separator">
+
+  <h3>Variantes del producto</h3>
+  <div class="variants-generator">
+    <div class="form-row">
+      <div class="form-group half">
+        <label>Color</label>
+        <input type="text" [(ngModel)]="newVariant.color" placeholder="Ej: Rojo, Azul">
+      </div>
+      <div class="form-group half">
+        <label>Color Hex</label>
+        <div class="color-picker-wrapper">
+          <input type="color" [(ngModel)]="newVariant.colorHex">
+          <span>{{ newVariant.colorHex }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Tallas (separadas por coma)</label>
+      <input type="text" [(ngModel)]="newVariant.sizes" placeholder="Ej: S, M, L, XL, 38, 40">
+    </div>
+
+    <div class="form-group">
+      <label>Stock por talla</label>
+      <input type="number" [(ngModel)]="newVariant.stock" placeholder="Cantidad">
+    </div>
+
+    <button class="btn-secondary" (click)="agregarVariantesEnBloque()">Generar Variantes</button>
+  </div>
+
+  <div class="variants-list" *ngIf="variants.length > 0">
+    <h4>Lista de Variantes ({{ variants.length }})</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>Color</th>
+          <th>Talla</th>
+          <th>Stock</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of variants; let i = index">
+          <td>
+            <span class="color-dot" [style.background-color]="item.colorHex"></span>
+            {{ item.color }}
+          </td>
+          <td>{{ item.size }}</td>
+          <td>
+            <input type="number" [(ngModel)]="item.stock" class="small-input">
+          </td>
+          <td>
+            <button class="btn-danger-sm" (click)="eliminarVariante(i)">X</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <button (click)="guardar()" class="btn-primary">Guardar Producto Completo</button>
+</div>

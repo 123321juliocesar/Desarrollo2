@@ -1,0 +1,57 @@
+.empty-orders-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    min-height: 400px;
+}
+
+.empty-icon {
+    color: #cbd5e0;
+    margin-bottom: 1.5rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.empty-orders-container h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+}
+
+.empty-orders-container p {
+    font-size: 1rem;
+    color: #718096;
+    margin-bottom: 2rem;
+}
+
+.btn-shop-now {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    background-color: #3182ce;
+    color: white;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-shop-now:hover {
+    background-color: #2c5282;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(49, 130, 206, 0.4);
+}

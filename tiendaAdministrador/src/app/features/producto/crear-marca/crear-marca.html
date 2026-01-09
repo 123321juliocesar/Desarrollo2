@@ -1,0 +1,19 @@
+<div class="contenedor">
+  <div class="card">
+    <h2>Crear Marca</h2>
+
+    <div class="grupo">
+      <label for="name">Nombre</label>
+      <input
+        id="name"
+        type="text"
+        [(ngModel)]="marca.name"
+        placeholder="Ingrese el nombre"
+      />
+    </div>
+
+    <button class="btn-guardar" (click)="guardar()">
+      Guardar Marca
+    </button>
+  </div>
+</div>

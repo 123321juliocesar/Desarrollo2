@@ -1,0 +1,51 @@
+<div class="order-card">
+    <div class="order-header">
+        <div class="order-info">
+            <h3 class="order-number">Pedido #{{ order.orderNumber }}</h3>
+            <span [class]="'status-badge ' + getStatusBadgeClass(order.status)">
+                {{ getStatusLabel(order.status) }}
+            </span>
+        </div>
+        <div class="order-meta">
+            <p class="order-date">Fecha: {{ formatDate(order.orderDate || order.createdAt) }}</p>
+            <p class="tracking-number">N° seguimiento: {{ (order.orderNumber || '').replace('ORD-', 'ESP') }}</p>
+        </div>
+    </div>
+
+    <div class="order-products">
+        <ng-container *ngIf="order.items && order.items.length > 0; else noItems">
+            <div class="product-item" *ngFor="let item of (order.items || []).slice(0, 3)">
+                <img [src]="item.productImageUrl" [alt]="item.productName" class="product-image">
+                <div class="product-details">
+                    <p class="product-name">{{ item.productName }}</p>
+                    <p class="product-variant" *ngIf="item.variantSize || item.variantColor">
+                        Cantidad: {{ item.quantity }} • Talla: {{ item.variantSize }} • Color: {{ item.variantColor }}
+                    </p>
+                </div>
+                <span class="product-price"></span>
+            </div>
+            <p class="more-items" *ngIf="order.items.length > 3">
+                +{{ order.items.length - 3 }} producto(s) más
+            </p>
+        </ng-container>
+        <ng-template #noItems>
+            <p class="text-muted p-3">No hay productos en esta orden.</p>
+        </ng-template>
+    </div>
+
+    <div class="order-shipping">
+        <p class="shipping-title">Dirección de envío:</p>
+        <p class="shipping-address">
+            Av. {{ order.shippingAddress }}, {{ order.shippingCity }}, {{ order.shippingProvince }} {{
+            order.shippingPostalCode }}, {{ order.shippingCountry }}
+        </p>
+    </div>
+
+    <div class="order-footer">
+        <div class="order-total">
+            <span class="total-label">Total</span>
+            <span class="total-amount">S/ {{ (order.totalAmount || 0).toFixed(2) }}</span>
+        </div>
+        <button class="btn-view-details" (click)="onViewDetails()">Ver Detalle</button>
+    </div>
+</div>

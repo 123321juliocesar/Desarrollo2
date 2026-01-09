@@ -1,0 +1,106 @@
+<div class="product-detail-container" *ngIf="!loading && producto">
+    <!-- Botón volver -->
+    <button class="back-button" (click)="goBack()">
+        <span class="back-icon">←</span> Volver al catálogo
+    </button>
+
+    <div class="product-detail">
+        <!-- Imagen del producto -->
+        <div class="product-image-section">
+            <img [src]="producto.imageUrl" [alt]="producto.name" class="product-image">
+        </div>
+
+        <!-- Información del producto -->
+        <div class="product-info-section">
+            <!-- Marca -->
+            <p class="product-brand">{{ brandName }}</p>
+
+            <!-- Nombre del producto -->
+            <h1 class="product-name">{{ producto.name }}</h1>
+
+            <!-- Rating -->
+            <div class="product-rating">
+                <div class="stars">
+                    <span *ngFor="let star of getStarArray()" class="star"
+                        [class.filled]="star <= (producto.averageRating || 0)">★</span>
+                </div>
+                <span class="rating-text">{{ producto.averageRating || 0 }} ({{ producto.reviewCount || 0
+                    }}
+                    reseñas)</span>
+            </div>
+
+            <!-- Precio -->
+            <div class="product-price">
+                <span class="current-price">S/ {{ producto.price }}</span>
+                <span class="old-price" *ngIf="producto.oldPrice">S/ {{ producto.oldPrice }}</span>
+                <span class="stock-info" *ngIf="selectedVariant">En stock ({{ selectedVariant.stock }}
+                    disponibles)</span>
+            </div>
+
+            <!-- Selector de Talla -->
+            <div class="variant-selector">
+                <label class="selector-label">Talla</label>
+                <div class="size-options">
+                    <button *ngFor="let size of availableSizes" class="size-button"
+                        [class.selected]="selectedSize === size" [class.disabled]="!isSizeAvailable(size)"
+                        [disabled]="!isSizeAvailable(size)" (click)="selectSize(size)">
+                        {{ size }}
+                    </button>
+                </div>
+            </div>
+
+            <!-- Selector de Color -->
+            <div class="variant-selector">
+                <label class="selector-label">Color</label>
+                <div class="color-options">
+                    <button *ngFor="let colorObj of availableColors" class="color-button"
+                        [class.selected]="selectedColor === colorObj.color"
+                        [class.disabled]="!isColorAvailable(colorObj.color)"
+                        [disabled]="!isColorAvailable(colorObj.color)" (click)="selectColor(colorObj.color)">
+                        {{ colorObj.color }}
+                    </button>
+                </div>
+            </div>
+
+            <!-- Selector de Cantidad -->
+            <div class="quantity-selector">
+                <label class="selector-label">Cantidad</label>
+                <div class="quantity-controls">
+                    <button class="quantity-button" (click)="decrementQuantity()" [disabled]="quantity <= 1">−</button>
+                    <input type="number" class="quantity-input" [(ngModel)]="quantity"
+                        [ngModelOptions]="{standalone: true}" min="1" [max]="selectedVariant?.stock || 1" readonly>
+                    <button class="quantity-button" (click)="incrementQuantity()"
+                        [disabled]="!selectedVariant || quantity >= selectedVariant.stock">+</button>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="action-buttons">
+                <button class="add-to-cart-button" (click)="addToCart()">
+                    <i class="fa fa-shopping-cart fa-lg"></i> Añadir al carrito
+                </button>
+                <button class="favorite-button" [class.active]="isFavorite" (click)="toggleFavorite()">
+                    <span class="heart-icon">{{ isFavorite ? '♥' : '♡' }}</span>
+                </button>
+            </div>
+
+            <!-- Descripción -->
+            <div class="product-description">
+                <h3>Descripción</h3>
+                <p>{{ producto.description }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading state -->
+<div class="loading-container" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Cargando producto...</p>
+</div>
+
+<!-- Error state -->
+<div class="error-container" *ngIf="error && !loading">
+    <p class="error-message">{{ error }}</p>
+    <button class="back-button" (click)="goBack()">Volver al catálogo</button>
+</div>

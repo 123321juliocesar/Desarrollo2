@@ -1,0 +1,90 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f4f6f9;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Contenedor */
+.contenedor {
+  width: 100%;
+  padding: 1rem;
+}
+
+/* Card */
+.card {
+  background-color: #ffffff;
+  max-width: 420px;
+  margin: auto;
+  padding: 2rem;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Título */
+.card h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+/* Grupos */
+.grupo {
+  margin-bottom: 1.2rem;
+}
+
+.grupo label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  color: #555;
+}
+
+/* Inputs */
+.grupo input,
+.grupo textarea {
+  width: 100%;
+  padding: 0.65rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Focus */
+.grupo input:focus,
+.grupo textarea:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15);
+}
+
+/* Textarea */
+.grupo textarea {
+  resize: none;
+  min-height: 90px;
+}
+
+/* Botón */
+.btn-guardar {
+  width: 100%;
+  padding: 0.7rem;
+  border: none;
+  border-radius: 10px;
+  background-color: #4f46e5;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-guardar:hover {
+  background-color: #4338ca;
+}
+
+.btn-guardar:active {
+  transform: scale(0.98);
+}

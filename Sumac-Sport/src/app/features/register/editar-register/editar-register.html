@@ -1,0 +1,20 @@
+<h2>Mi Perfil</h2>
+
+<div *ngIf="usuario; else noLogin">
+
+  <p><strong>Nombre:</strong> {{ usuario.firstName }}</p>
+  <p><strong>Apellido:</strong> {{ usuario.lastName }}</p>
+  <p><strong>Email:</strong> {{ usuario.email }}</p>
+  <p><strong>Teléfono:</strong> {{ usuario.phone }}</p>
+  <p><strong>Dirección:</strong> {{ usuario.address }}</p>
+  <p><strong>Ciudad:</strong> {{ usuario.city }}</p>
+  <p><strong>Código Postal:</strong> {{ usuario.postalCode }}</p>
+
+</div>
+
+<ng-template #noLogin>
+  <p>No hay usuario en sesión</p>
+</ng-template>
+
+
+

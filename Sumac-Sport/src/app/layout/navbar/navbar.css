@@ -1,0 +1,73 @@
+/* Fondo con gradiente dinámico */
+.custom-navbar {
+  background: linear-gradient(to bottom, #155DFC, #193CB8);
+  padding: 12px 20px;
+  transition: background 0.4s ease;
+}
+
+.custom-navbar:hover {
+  background: linear-gradient(to bottom, #155DFC, #193CB8);
+}
+
+.nav-link {
+  color: #ffffff !important;
+  font-weight: 500;
+  font-size: 1.05rem;
+}
+
+/* Subrayado animado */
+.cool-link {
+  position: relative;
+}
+
+.cool-link::after {
+  content: '';
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background: white;
+  transition: width 0.3s ease;
+}
+
+.cool-link:hover::after {
+  width: 100%;
+}
+
+/* Botón Login */
+.btn-login {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid white;
+  transition: 0.3s ease;
+}
+
+.btn-login:hover {
+  background-color: white !important;
+  color: black !important;
+  border-color: #000 !important;
+}
+
+/* Active */
+.active {
+  font-weight: 700 !important;
+  color: #00d0ff !important;
+}
+
+.navbar-toggler {
+  border: none;
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255, 0.8)' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+.nav-box {
+  display: flex;
+  align-items: center;
+}
+
+.nav-box i {
+  color: white;
+}

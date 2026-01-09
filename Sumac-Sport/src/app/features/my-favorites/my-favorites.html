@@ -1,0 +1,26 @@
+<div class="favorites-container">
+    <h1 class="page-title">Mis Favoritos</h1>
+    <p class="subtitle" *ngIf="!loading">{{ favorites.length }} productos guardados</p>
+
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Cargando tus favoritos...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!loading && favorites.length === 0">
+        <div class="empty-icon-container">
+            <span class="empty-heart-icon">♡</span>
+        </div>
+        <h2>No tienes favoritos</h2>
+        <p>Añade productos a favoritos para guardarlos y verlos más tarde</p>
+        <button class="explore-btn" routerLink="/home">Explorar productos</button>
+    </div>
+
+    <!-- Favorites Grid -->
+    <div class="favorites-grid" *ngIf="!loading && favorites.length > 0">
+        <app-product-card *ngFor="let fav of favorites" [product]="fav.product" (productClick)="onProductClick($event)">
+        </app-product-card>
+    </div>
+</div>

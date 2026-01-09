@@ -1,0 +1,82 @@
+<div class="filters-container">
+    <div class="filters-header">
+        <h3>Filtros</h3>
+        <button class="clear-filters-btn" (click)="clearFilters()">
+            Limpiar filtros
+        </button>
+    </div>
+
+    <!-- Categoría -->
+    <div class="filter-section">
+        <div class="filter-header" (click)="categoriesExpanded = !categoriesExpanded">
+            <span>Categoría</span>
+            <span class="toggle-icon">{{ categoriesExpanded ? '−' : '+' }}</span>
+        </div>
+        <div class="filter-options" *ngIf="categoriesExpanded">
+            <label *ngFor="let category of categories" class="filter-option">
+                <input type="checkbox" [checked]="selectedCategories.has(category.idCategory)"
+                    (change)="toggleCategory(category.idCategory)" />
+                <span>{{ category.name }}</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Marca -->
+    <div class="filter-section">
+        <div class="filter-header" (click)="brandsExpanded = !brandsExpanded">
+            <span>Marca</span>
+            <span class="toggle-icon">{{ brandsExpanded ? '−' : '+' }}</span>
+        </div>
+        <div class="filter-options" *ngIf="brandsExpanded">
+            <label *ngFor="let brand of brands" class="filter-option">
+                <input type="checkbox" [checked]="selectedBrands.has(brand.idBrand)"
+                    (change)="toggleBrand(brand.idBrand)" />
+                <span>{{ brand.name }}</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Precio -->
+    <div class="filter-section">
+        <div class="filter-header" (click)="priceExpanded = !priceExpanded">
+            <span>Precio</span>
+            <span class="toggle-icon">{{ priceExpanded ? '−' : '+' }}</span>
+        </div>
+        <div class="filter-options price-inputs" *ngIf="priceExpanded">
+            <div class="price-range">
+                <input type="number" placeholder="0" [(ngModel)]="minPrice" (ngModelChange)="onPriceChange()" min="0" />
+                <span>—</span>
+                <input type="number" placeholder="500" [(ngModel)]="maxPrice" (ngModelChange)="onPriceChange()"
+                    min="0" />
+            </div>
+        </div>
+    </div>
+
+    <!-- Talla -->
+    <div class="filter-section">
+        <div class="filter-header" (click)="sizesExpanded = !sizesExpanded">
+            <span>Talla</span>
+            <span class="toggle-icon">{{ sizesExpanded ? '−' : '+' }}</span>
+        </div>
+        <div class="filter-options" *ngIf="sizesExpanded">
+            <label *ngFor="let size of availableSizes" class="filter-option">
+                <input type="checkbox" [checked]="selectedSizes.has(size)" (change)="toggleSize(size)" />
+                <span>{{ size }}</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Color -->
+    <div class="filter-section">
+        <div class="filter-header" (click)="colorsExpanded = !colorsExpanded">
+            <span>Color</span>
+            <span class="toggle-icon">{{ colorsExpanded ? '−' : '+' }}</span>
+        </div>
+        <div class="filter-options" *ngIf="colorsExpanded">
+            <label *ngFor="let color of availableColors" class="filter-option">
+                <input type="checkbox" [checked]="selectedColors.has(color)" (change)="toggleColor(color)" />
+                <span>{{ color }}</span>
+            </label>
+        </div>
+    </div>
+</div>

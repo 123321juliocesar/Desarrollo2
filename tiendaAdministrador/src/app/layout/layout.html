@@ -1,0 +1,29 @@
+<div class="page-wrapper">
+
+  <!-- HEADER OUTER -->
+  <app-header-outer></app-header-outer>
+
+  <div class="layout-container">
+
+    <!-- SIDEBAR -->
+    <app-sidebar [open]="sidebarOpen"></app-sidebar>
+
+    <div class="layout-content">
+
+      <app-header-inner (menuClick)="toggleSidebar()"></app-header-inner>
+
+      <main class="view">
+        <router-outlet></router-outlet>
+      </main>
+
+      <!-- FOOTER INNER -->
+      <app-footer-inner></app-footer-inner>
+
+    </div>
+  </div>
+
+  <!-- FOOTER OUTER -->
+  <app-footer-outer></app-footer-outer>
+
+</div>
+

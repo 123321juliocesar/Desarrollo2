@@ -1,0 +1,39 @@
+<div class="cart-item card mb-3">
+    <div class="row g-0">
+        <div class="col-md-2 image-container">
+            <img [src]="item.product.imageUrl" [alt]="item.product.name" class="img-fluid rounded-start product-img">
+        </div>
+        <div class="col-md-10">
+            <div class="card-body d-flex justify-content-between align-items-center h-100">
+                <div class="item-details flex-grow-1">
+                    <h5 class="card-title">{{ item.product.name }}</h5>
+                    <div class="variant-info">
+                        <span class="badge bg-light text-dark border me-2">Talla: {{ item.variant.size }}</span>
+                        <span class="badge bg-light text-dark border">Color: {{ item.variant.color }}</span>
+                    </div>
+                </div>
+
+                <div class="quantity-controls mx-4">
+                    <button class="btn btn-sm btn-outline-secondary" (click)="decrement()"
+                        [disabled]="item.quantity <= 1">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <span class="mx-3 fw-bold">{{ item.quantity }}</span>
+                    <button class="btn btn-sm btn-outline-secondary" (click)="increment()"
+                        [disabled]="item.quantity >= item.variant.stock">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+
+                <div class="price-section text-end">
+                    <p class="fw-bold fs-5 mb-0">S/ {{ (item.unitPrice * item.quantity).toFixed(2) }}</p>
+                    <small class="text-muted">S/ {{ item.unitPrice }} c/u</small>
+                </div>
+
+                <button class="btn btn-link text-danger ms-4 remove-btn" (click)="removeItem()">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

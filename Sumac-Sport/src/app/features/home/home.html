@@ -1,0 +1,19 @@
+<!-- Header del catálogo -->
+<div class="catalog-header">
+  <h2>Catálogo de Productos</h2>
+  <p *ngIf="listarProductos.length > 0">{{ listarProductos.length }} productos encontrados</p>
+</div>
+
+<div class="home-container">
+  <!-- Área principal con productos -->
+  <main class="products-main" style="width: 100%;">
+    <div class="productos-container">
+      <app-product-card *ngFor="let producto of listarProductos" [product]="producto"
+        (productClick)="onProductClick($event)" (addToCart)="onAddToCart($event)"></app-product-card>
+    </div>
+
+    <div *ngIf="listarProductos.length === 0" class="no-products">
+      <p>No se encontraron productos.</p>
+    </div>
+  </main>
+</div>

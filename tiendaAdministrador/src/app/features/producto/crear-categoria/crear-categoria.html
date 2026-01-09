@@ -1,0 +1,32 @@
+<div class="contenedor">
+  <div class="card">
+    <h2>Crear Categoría</h2>
+
+    <div class="grupo">
+      <label for="name">Nombre</label>
+      <input
+        id="name"
+        type="text"
+        [(ngModel)]="categoria.name"
+        placeholder="Ingrese el nombre"
+      />
+    </div>
+
+    <div class="grupo">
+      <label for="description">Descripción</label>
+      <textarea
+        id="description"
+        [(ngModel)]="categoria.description"
+        placeholder="Ingrese la descripción"
+      ></textarea>
+    </div>
+
+    <button class="btn-guardar" (click)="guardar()">
+      Guardar Categoría
+    </button>
+  </div>
+</div>
+
+
+
+

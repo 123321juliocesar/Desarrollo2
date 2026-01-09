@@ -1,0 +1,4 @@
+/* Basic styling, mostly bootstrap used */
+.rounded-circle {
+    transition: all 0.3s ease;
+}

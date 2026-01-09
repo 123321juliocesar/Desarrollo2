@@ -1,0 +1,38 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+/* CONTENEDOR GENERAL */
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* CONTENIDO CENTRAL */
+.layout-container {
+  flex: 1;
+  display: flex;
+}
+
+/* CONTENIDO DERECHO */
+.layout-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* CONTENIDO DINÁMICO */
+.view {
+  flex: 1;              /* 👈 hace crecer el router-outlet */
+  overflow-y: auto;
+  padding: 16px;
+}
+
+/* SOLO ESTÉTICA */
+app-footer-outer {
+  display: block;
+}
+
+

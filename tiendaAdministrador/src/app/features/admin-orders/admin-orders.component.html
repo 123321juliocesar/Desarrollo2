@@ -1,0 +1,84 @@
+<div class="admin-orders-container">
+    <div class="header">
+        <h1>Gestión de Pedidos</h1>
+
+        <div class="controls-container">
+            <div class="search-box">
+                <input type="text" [(ngModel)]="searchTerm" (input)="onSearchChange()" class="form-control"
+                    placeholder="Buscar usuario o N° pedido...">
+            </div>
+
+            <div class="filter-container">
+                <label for="statusFilter">Estado:</label>
+                <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="onStatusFilterChange()"
+                    class="status-filter form-select">
+                    <option *ngFor="let option of statusOptions" [value]="option.value">
+                        {{ option.label }}
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="loading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Cargando pedidos...</p>
+    </div>
+
+    <div *ngIf="!loading && filteredOrders.length === 0" class="empty-state">
+        <p>No se encontraron pedidos.</p>
+    </div>
+
+    <div *ngIf="!loading && filteredOrders.length > 0" class="table-responsive">
+        <table class="orders-table">
+            <thead>
+                <tr>
+                    <th>N° Pedido</th>
+                    <th>Usuario</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let order of filteredOrders">
+                    <td>{{ order.orderNumber }}</td>
+                    <td>
+                        <div class="user-info">
+                            <span class="user-name">{{ order.userName || 'Usuario' }}</span>
+                            <small class="text-muted">{{ order.idUser }}</small>
+                        </div>
+                    </td>
+                    <td>{{ order.orderDate | date:'dd/MM/yyyy HH:mm' }}</td>
+                    <td>S/ {{ order.totalAmount.toFixed(2) }}</td>
+                    <td>
+                        <span [class]="'badge badge-' + order.status">
+                            {{ getStatusLabel(order.status) }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button *ngIf="order.status === 'pending'"
+                                (click)="updateStatus(order.idOrder, 'confirmed')" class="btn btn-sm btn-success">
+                                Confirmar
+                            </button>
+                            <button *ngIf="order.status === 'confirmed'"
+                                (click)="updateStatus(order.idOrder, 'shipped')" class="btn btn-sm btn-primary">
+                                Enviar
+                            </button>
+                            <button *ngIf="order.status === 'shipped'"
+                                (click)="updateStatus(order.idOrder, 'delivered')" class="btn btn-sm btn-info">
+                                Entregar
+                            </button>
+                            <button *ngIf="order.status !== 'cancelled' && order.status !== 'delivered'"
+                                (click)="updateStatus(order.idOrder, 'cancelled')" class="btn btn-sm btn-danger">
+                                Cancelar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
