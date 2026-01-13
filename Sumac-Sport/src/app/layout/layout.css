@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(to bottom, #155DFC, #193CB8);
+  background: linear-gradient(to bottom, #8e17ac, #8e17ac);
   height: 55px;
 }
 
@@ -36,7 +36,10 @@
   border: none;
   padding: 0 15px;
   outline: none;
-  background: linear-gradient(to bottom, #155DFC, #193CB8);
+  background: linear-gradient(to bottom, #d6ace1, #b684b0);
+  color: white;
+
+
 }
 
 .search-box {

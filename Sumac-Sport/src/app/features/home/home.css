@@ -1,17 +1,28 @@
+/* Paleta de colores:
+   Principal: #6d28d9 (Violeta fuerte)
+   Fondo: #f5f3ff (Lavanda suave)
+   Hover: #7c3aed (Púrpura vibrante)
+*/
+
 .catalog-header {
-  padding: 2rem 2rem 1rem 2rem;
+  padding: 2.5rem 2rem 1.5rem 2rem;
   max-width: 100%;
+  background: linear-gradient(to right, #f5f3ff, #ffffff);
+  border-bottom: 2px solid #ddd6fe;
 }
 
 .catalog-header h2 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #1a1a1a;
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #4c1d95; /* Violeta oscuro */
   margin: 0 0 0.5rem 0;
+  letter-spacing: -0.5px;
+  text-align: center;
 }
 
 .catalog-header p {
-  color: #666;
+  color: #7c3aed;
+  font-weight: 500;
   font-size: 0.95rem;
   margin: 0;
 }
@@ -21,62 +32,54 @@
   width: 100%;
   max-width: 100%;
   margin: 0;
-  padding: 0 2rem 2rem 2rem;
+  padding: 2rem;
+  background-color: #fdfcff;
 }
 
-
-.products-main {
-  min-width: 0;
-  /* Prevents grid blowout */
-}
-
-.products-header {
-  margin-bottom: 1.5rem;
-}
-
-.products-header h2 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin: 0 0 0.5rem 0;
-}
-
-.products-header p {
-  color: #666;
-  font-size: 0.95rem;
-  margin: 0;
-}
-
+/* Contenedor de productos - Cuadros más pequeños */
 .productos-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px;
+  /* Reducido a 200px para que entren más cuadros por fila */
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+/* Efecto opcional para las tarjetas (si quieres aplicarlo en app-product-card) */
+app-product-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 12px;
+  overflow: hidden;
+  display: block;
+}
+
+app-product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(109, 40, 217, 0.15);
 }
 
 .no-products {
   text-align: center;
-  padding: 3rem;
-  color: #666;
-  font-size: 1.1rem;
+  padding: 5rem;
+  color: #6d28d9;
+  font-style: italic;
 }
 
-@media (max-width: 1024px) {
-  .home-container {
-    padding: 1.5rem;
-  }
-}
-
+/* Responsive */
 @media (max-width: 768px) {
-
+  .home-container {
+    padding: 1rem;
+  }
   .productos-container {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 16px;
+    /* En móviles un poco más grandes para legibilidad */
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
   }
 }
 
 @media (max-width: 480px) {
   .productos-container {
-    grid-template-columns: 1fr;
-    gap: 16px;
+    /* Dos columnas en móviles muy pequeños en lugar de una sola */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
   }
 }

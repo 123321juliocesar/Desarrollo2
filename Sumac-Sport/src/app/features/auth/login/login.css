@@ -15,23 +15,23 @@
 
 .login-input {
   border-radius: 8px;
-  border: 1px solid #90caf9;
+  border: 1px solid #e6c8e1;
 }
 
 .login-input:focus {
-  border-color: #2196f3;
-  box-shadow: 0 0 6px rgba(33, 150, 243, 0.4);
+  border-color: #b883c7;
+  box-shadow: 0 0 6px rgba(172, 37, 161, 0.4);
 }
 
 .btn-login {
-  background-color: #2196f3;
+  background-color: #ad218d;
   border: none;
   border-radius: 8px;
   padding: 10px;
 }
 
 .btn-login:hover {
-  background-color: #1976d2;
+  background-color: #c146a8;
 }
 
 /* Animación */

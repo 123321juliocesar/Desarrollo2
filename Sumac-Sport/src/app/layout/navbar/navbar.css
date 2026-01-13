@@ -1,12 +1,12 @@
 /* Fondo con gradiente dinámico */
 .custom-navbar {
-  background: linear-gradient(to bottom, #155DFC, #193CB8);
+  background: linear-gradient(to bottom, #962c91, #8e17ac);
   padding: 12px 20px;
   transition: background 0.4s ease;
 }
 
 .custom-navbar:hover {
-  background: linear-gradient(to bottom, #155DFC, #193CB8);
+  background: linear-gradient(to bottom, #8e17ac, #730a6e);
 }
 
 .nav-link {
@@ -15,7 +15,7 @@
   font-size: 1.05rem;
 }
 
-/* Subrayado animado */
+
 .cool-link {
   position: relative;
 }
@@ -52,7 +52,7 @@
 /* Active */
 .active {
   font-weight: 700 !important;
-  color: #00d0ff !important;
+  color: #ed35da !important;
 }
 
 .navbar-toggler {
