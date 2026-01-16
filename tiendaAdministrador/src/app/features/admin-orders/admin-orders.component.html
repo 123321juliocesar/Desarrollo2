@@ -1,22 +1,41 @@
 <div class="admin-orders-container">
     <div class="header">
-        <h1>Gestión de Pedidos</h1>
+        <div class="title-section">
+            <h1>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+                Gestión de Pedidos
+            </h1>
+            <p class="subtitle">Administra y da seguimiento a todos los pedidos</p>
+        </div>
+    </div>
 
-        <div class="controls-container">
-            <div class="search-box">
-                <input type="text" [(ngModel)]="searchTerm" (input)="onSearchChange()" class="form-control"
-                    placeholder="Buscar usuario o N° pedido...">
-            </div>
+    <div class="controls-container">
+        <div class="search-box">
+            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <input type="text" [(ngModel)]="searchTerm" (input)="onSearchChange()" class="form-control"
+                placeholder="Buscar por usuario o número de pedido...">
+        </div>
 
-            <div class="filter-container">
-                <label for="statusFilter">Estado:</label>
-                <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="onStatusFilterChange()"
-                    class="status-filter form-select">
-                    <option *ngFor="let option of statusOptions" [value]="option.value">
-                        {{ option.label }}
-                    </option>
-                </select>
-            </div>
+        <div class="filter-container">
+            <label for="statusFilter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                </svg>
+                Filtrar por estado
+            </label>
+            <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="onStatusFilterChange()"
+                class="status-filter form-select">
+                <option *ngFor="let option of statusOptions" [value]="option.value">
+                    {{ option.label }}
+                </option>
+            </select>
         </div>
     </div>
 
@@ -29,56 +48,106 @@
         <p>No se encontraron pedidos.</p>
     </div>
 
-    <div *ngIf="!loading && filteredOrders.length > 0" class="table-responsive">
-        <table class="orders-table">
-            <thead>
-                <tr>
-                    <th>N° Pedido</th>
-                    <th>Usuario</th>
-                    <th>Fecha</th>
-                    <th>Total</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let order of filteredOrders">
-                    <td>{{ order.orderNumber }}</td>
-                    <td>
-                        <div class="user-info">
-                            <span class="user-name">{{ order.userName || 'Usuario' }}</span>
-                            <small class="text-muted">{{ order.idUser }}</small>
-                        </div>
-                    </td>
-                    <td>{{ order.orderDate | date:'dd/MM/yyyy HH:mm' }}</td>
-                    <td>S/ {{ order.totalAmount.toFixed(2) }}</td>
-                    <td>
-                        <span [class]="'badge badge-' + order.status">
-                            {{ getStatusLabel(order.status) }}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="action-buttons">
-                            <button *ngIf="order.status === 'pending'"
-                                (click)="updateStatus(order.idOrder, 'confirmed')" class="btn btn-sm btn-success">
-                                Confirmar
-                            </button>
-                            <button *ngIf="order.status === 'confirmed'"
-                                (click)="updateStatus(order.idOrder, 'shipped')" class="btn btn-sm btn-primary">
-                                Enviar
-                            </button>
-                            <button *ngIf="order.status === 'shipped'"
-                                (click)="updateStatus(order.idOrder, 'delivered')" class="btn btn-sm btn-info">
-                                Entregar
-                            </button>
-                            <button *ngIf="order.status !== 'cancelled' && order.status !== 'delivered'"
-                                (click)="updateStatus(order.idOrder, 'cancelled')" class="btn btn-sm btn-danger">
-                                Cancelar
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <div *ngIf="!loading && filteredOrders.length > 0" class="table-container">
+        <div class="table-responsive">
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>N° Pedido</th>
+                        <th>Usuario</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let order of filteredOrders">
+                        <td>
+                            <div class="order-number">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="9" y1="9" x2="15" y2="9"></line>
+                                    <line x1="9" y1="15" x2="15" y2="15"></line>
+                                </svg>
+                                <span>{{ order.orderNumber }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="user-info">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                <div class="user-details">
+                                    <span class="user-name">{{ order.userName || 'Usuario' }}</span>
+                                    <small class="text-muted">ID: {{ order.idUser }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="date-info">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                <span>{{ order.orderDate | date:'dd/MM/yyyy HH:mm' }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="price-info">
+                                <span class="currency">S/</span>
+                                <span class="amount">{{ order.totalAmount.toFixed(2) }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span [class]="'badge badge-' + order.status">
+                                <span class="badge-dot"></span>
+                                {{ getStatusLabel(order.status) }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button *ngIf="order.status === 'pending'"
+                                    (click)="updateStatus(order.idOrder, 'confirmed')" class="btn btn-success" title="Confirmar pedido">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>Confirmar</span>
+                                </button>
+                                <button *ngIf="order.status === 'confirmed'"
+                                    (click)="updateStatus(order.idOrder, 'shipped')" class="btn btn-primary" title="Marcar como enviado">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="1" y="3" width="15" height="13"></rect>
+                                        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                        <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                        <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                                    </svg>
+                                    <span>Enviar</span>
+                                </button>
+                                <button *ngIf="order.status === 'shipped'"
+                                    (click)="updateStatus(order.idOrder, 'delivered')" class="btn btn-info" title="Marcar como entregado">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    </svg>
+                                    <span>Entregar</span>
+                                </button>
+                                <button *ngIf="order.status !== 'cancelled' && order.status !== 'delivered'"
+                                    (click)="updateStatus(order.idOrder, 'cancelled')" class="btn btn-danger" title="Cancelar pedido">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                    <span>Cancelar</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>

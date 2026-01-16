@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { LoginRequest, LoginResponse } from '../models/login.model';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
@@ -30,7 +31,21 @@ export class loginService {
   }
 
   login(data: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(this.apiUrl, data);
+    // Observe full response to capture potential Authorization header token
+    return this.http.post<LoginResponse>(this.apiUrl, data, { observe: 'response' as const }).pipe(
+      map((resp) => {
+        const body = resp.body as LoginResponse;
+        const authHeader = resp.headers.get('Authorization') || resp.headers.get('authorization');
+        if (body && body.user && authHeader) {
+          // normalize token key on user object for interceptor
+          (body.user as any).token = authHeader.replace(/^Bearer\s+/i, '');
+        }
+        return body;
+      }),
+      // keep compatibility if any tap-based side-effects are needed in future
+      // no-op tap here to keep return type as Observable<LoginResponse>
+      tap(() => {})
+    );
   }
 
   saveUser(user: any): void {

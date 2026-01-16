@@ -75,6 +75,13 @@ public class FavoriteController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/ids")
+    @Operation(summary = "Obtener IDs de favoritos", description = "Obtiene solo los IDs de los productos favoritos de un usuario")
+    public ResponseEntity<List<String>> getIds(@RequestParam String idUser) {
+        java.util.Set<String> ids = this.favoriteBusiness.getUserFavoriteProductIds(idUser);
+        return new ResponseEntity<>(new java.util.ArrayList<>(ids), HttpStatus.OK);
+    }
+
     @GetMapping(path = "/check/{idProduct}")
     @Operation(summary = "Verificar favorito", description = "Verifica si un producto está en la lista de favoritos del usuario")
     public ResponseEntity<ResponseFavoriteCheck> check(

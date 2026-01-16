@@ -1,4 +1,4 @@
-package com.epiis.app.config;
+package com.epiis.app;
 
 
 import java.util.List;

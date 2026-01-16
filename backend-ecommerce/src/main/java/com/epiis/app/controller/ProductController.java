@@ -39,7 +39,9 @@ public class ProductController {
     public ResponseEntity<ResponseProduct> create(@RequestBody RequestProductCreate request) {
         ResponseProduct response = new ResponseProduct();
 
-        String result = this.productBusiness.create(request.getDto().getProduct());
+        //String result = this.productBusiness.create(request.getDto().getProduct());
+        String result = this.productBusiness.create(request.getDto().getProduct(), request.getDto().getVariants());
+
 
         if (result.equals("Producto creado correctamente")) {
             response.success();
@@ -102,7 +104,7 @@ public class ProductController {
             @RequestBody RequestProductUpdate request) {
         ResponseProduct response = new ResponseProduct();
 
-        String result = this.productBusiness.update(id, request.getDto().getProduct());
+        String result = this.productBusiness.update(id, request.getDto().getProduct(), request.getDto().getVariant());
 
         if (result.equals("Producto actualizado correctamente")) {
             response.success();

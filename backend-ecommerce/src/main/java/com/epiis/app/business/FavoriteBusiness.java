@@ -148,6 +148,10 @@ public class FavoriteBusiness {
         return "Producto eliminado de favoritos";
     }
 
+    public java.util.Set<String> getUserFavoriteProductIds(String idUser) {
+        return favoriteRepository.findProductIdsByUserId(idUser);
+    }
+
     /**
      * Convierte una entidad Favorite a DtoFavorite
      */
