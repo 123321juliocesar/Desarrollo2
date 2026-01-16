@@ -19,34 +19,51 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtService jwtService;
-    @Autowired private UserDetailsService userDetailsService;
+    
+    @Autowired 
+    private UserDetailsService userDetailsService;
 
+    // --- ESTO ES LO QUE FALTA PARA EVITAR EL 403 EN RUTAS PÚBLICAS ---
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getServletPath();
+        return path.equals("/user/login") || 
+               path.equals("/user/register") || 
+               path.equals("/user/refresh-token") ||
+               path.equals("/swagger-ui/index.html") ||
+               path.startsWith("/v3/api-docs");
+    }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) 
+            throws ServletException, IOException {
+        
         String authHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
-            username = jwtService.extractUsername(token);
-        }
-        if (username != null &&
-                SecurityContextHolder.getContext().getAuthentication() == null) {
-            var userDetails =
-                    this.userDetailsService.loadUserByUsername(username);
-            if (jwtService.validateToken(token, userDetails.getUsername())) {
-                UsernamePasswordAuthenticationToken authToken = new
-                        UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(new
-                        WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+        try {
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                token = authHeader.substring(7);
+                username = jwtService.extractUsername(token);
             }
+
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                var userDetails = this.userDetailsService.loadUserByUsername(username);
+                
+                if (jwtService.validateToken(token, userDetails.getUsername())) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            }
+        } catch (Exception e) {
+            // Si el token es inválido, simplemente no autenticamos, 
+            // pero dejamos que el filtro siga (shouldNotFilter se encarga de las públicas)
+            logger.error("Error en autenticación JWT: " + e.getMessage());
         }
+
         filterChain.doFilter(request, response);
     }
 }
-
-
