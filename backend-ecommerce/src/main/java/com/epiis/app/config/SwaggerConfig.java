@@ -14,11 +14,11 @@ public class SwaggerConfig {
 	OpenAPI customOpenAPI() {
 		return new OpenAPI()
 				.info(new Info()
-						.title("API SUMACSPORT")
+						.title("API AtelierMode")
 						.version("1.0")
 						.description("API REST para gestión de usuarios y productos deportivos")
 						.contact(new Contact()
-								.name("JULIO CESAR GONZALES CASTLLO")
+								.name("Julio Cesar Gonzales Castillo")
 								.email("222175@unamba.edu.pe")));
 	}
 }

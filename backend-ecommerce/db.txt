@@ -188,7 +188,7 @@ CREATE TABLE tOrder(
     orderDate DATETIME NOT NULL,                 -- Fecha y hora del pedido
     totalAmount DECIMAL(10,2) NOT NULL,          -- Total final a pagar (subtotal + impuestos + envío)
     subtotal DECIMAL(10,2) NOT NULL,             -- Suma de precios de productos sin impuestos
-    tax DECIMAL(10,2) NOT NULL,                  -- Monto de impuestos
+    --tax DECIMAL(10,2) NOT NULL,                  -- Monto de impuestos
     shippingCost DECIMAL(10,2) NOT NULL,         -- Costo de envío
     status VARCHAR(50) NOT NULL,                 -- Estado: 'pending', 'confirmed', 'shipped', 'delivered', 'cancelled'
     shippingAddress VARCHAR(255),                -- Dirección de envío

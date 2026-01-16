@@ -21,6 +21,9 @@ import com.epiis.app.entity.ProductVariant;
 import com.epiis.app.repository.BrandRepository;
 import com.epiis.app.repository.CategoryRepository;
 import com.epiis.app.repository.ProductRepository;
+import com.epiis.app.repository.ProductVariantRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class ProductBusiness {
@@ -34,10 +37,14 @@ public class ProductBusiness {
     @Autowired
     private BrandRepository brandRepository;
 
+    @Autowired
+    private ProductVariantRepository productVariantRepository;
+
     /**
-     * Crea un nuevo producto
+     * Crea un nuevo producto con sus variantes
      */
-    public String create(DtoProduct dtoProduct) {
+    @Transactional
+    public String create(DtoProduct dtoProduct, List<DtoProductVariant> variants) {
         // Validación: Nombre obligatorio
         if (dtoProduct.getName() == null || dtoProduct.getName().trim().isEmpty()) {
             return "El nombre del producto es obligatorio";
@@ -111,6 +118,23 @@ public class ProductBusiness {
         // Guardar en base de datos
         productRepository.save(product);
 
+         // Guardar variantes si existen
+        if (variants != null && !variants.isEmpty()) {
+            for (DtoProductVariant variantDto : variants) {
+                ProductVariant variant = new ProductVariant();
+                variant.setIdVariant(UUID.randomUUID().toString());
+                variant.setProduct(product);
+                variant.setSize(variantDto.getSize());
+                variant.setColor(variantDto.getColor());
+                variant.setColorHex(variantDto.getColorHex());
+                variant.setStock(variantDto.getStock() != null ? variantDto.getStock() : 0);
+                variant.setCreatedAt(new Timestamp(new Date().getTime()));
+                variant.setUpdatedAt(new Timestamp(new Date().getTime()));
+                
+                productVariantRepository.save(variant);
+            }
+        }
+
         return "Producto creado correctamente";
     }
 
@@ -137,6 +161,7 @@ public class ProductBusiness {
      * @param idProduct - ID del producto
      * @return DtoProductDetail con el producto y sus variantes, o null si no existe
      */
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public DtoProductDetail findByIdWithVariants(String idProduct) {
         Optional<Product> productOptional = productRepository.findById(idProduct);
 
@@ -192,9 +217,10 @@ public class ProductBusiness {
     }
 
     /**
-     * Actualiza un producto
+     * Actualiza un producto y sus variantes
      */
-    public String update(String idProduct, DtoProduct dtoProduct) {
+    @Transactional
+    public String update(String idProduct, DtoProduct dtoProduct, List<DtoProductVariant> incomingVariants) {
         Optional<Product> productOptional = productRepository.findById(idProduct);
 
         if (!productOptional.isPresent()) {
@@ -261,6 +287,65 @@ public class ProductBusiness {
         product.setUpdatedAt(new Timestamp(new Date().getTime()));
 
         productRepository.save(product);
+
+        // --- Lógica de Variantes ---
+        if (incomingVariants != null) {
+            List<ProductVariant> currentVariants = product.getVariants(); // Hibernate gestiona esto
+
+            // 1. Identificar variantes a eliminar (están en DB pero no en incoming)
+            List<String> incomingIds = incomingVariants.stream()
+                    .map(DtoProductVariant::getIdVariant)
+                    .filter(id -> id != null && !id.trim().isEmpty())
+                    .collect(Collectors.toList());
+
+            List<ProductVariant> toDelete = currentVariants.stream()
+                    .filter(v -> !incomingIds.contains(v.getIdVariant()))
+                    .collect(Collectors.toList());
+
+            for (ProductVariant v : toDelete) {
+                try {
+                    productVariantRepository.delete(v);
+                    productVariantRepository.flush(); // Forzar ejecución para detectar FK
+                } catch (Exception e) {
+                    // Si falla (FK constraint), poner stock 0 lógico
+                    v.setStock(0);
+                    productVariantRepository.save(v);
+                }
+            }
+
+            // 2. Crear o Actualizar
+            for (DtoProductVariant dtoV : incomingVariants) {
+                if (dtoV.getIdVariant() == null || dtoV.getIdVariant().trim().isEmpty()) {
+                    // CREAR
+                    ProductVariant newV = new ProductVariant();
+                    newV.setIdVariant(UUID.randomUUID().toString());
+                    newV.setProduct(product);
+                    newV.setSize(dtoV.getSize());
+                    newV.setColor(dtoV.getColor());
+                    newV.setColorHex(dtoV.getColorHex());
+                    newV.setStock(dtoV.getStock() != null ? dtoV.getStock() : 0);
+                    newV.setCreatedAt(new Timestamp(new Date().getTime()));
+                    newV.setUpdatedAt(new Timestamp(new Date().getTime()));
+                    productVariantRepository.save(newV);
+                } else {
+                    // ACTUALIZAR
+                    Optional<ProductVariant> existingV = currentVariants.stream()
+                            .filter(v -> v.getIdVariant().equals(dtoV.getIdVariant()))
+                            .findFirst();
+
+                    if (existingV.isPresent()) {
+                        ProductVariant v = existingV.get();
+                        v.setSize(dtoV.getSize());
+                        v.setColor(dtoV.getColor());
+                        v.setColorHex(dtoV.getColorHex());
+                        v.setStock(dtoV.getStock());
+                        v.setUpdatedAt(new Timestamp(new Date().getTime()));
+                        productVariantRepository.save(v);
+                    }
+                }
+            }
+        }
+
 
         return "Producto actualizado correctamente";
     }

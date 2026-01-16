@@ -2,6 +2,7 @@ package com.epiis.app.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -12,14 +13,18 @@ import com.epiis.app.entity.Product;
 public interface ProductRepository extends JpaRepository<Product, String>, JpaSpecificationExecutor<Product> {
 
     // Busca productos por categoría
+    @EntityGraph(attributePaths = { "brand", "category" })
     List<Product> findByCategory_IdCategory(String idCategory);
 
     // Busca productos por marca
+    @EntityGraph(attributePaths = { "brand", "category" })
     List<Product> findByBrand_IdBrand(String idBrand);
 
     // Busca productos por nombre (case insensitive)
+    @EntityGraph(attributePaths = { "brand", "category" })
     List<Product> findByNameContainingIgnoreCase(String name);
 
     // Busca productos por estado
+    @EntityGraph(attributePaths = { "brand", "category" })
     List<Product> findByStatus(String status);
 }
