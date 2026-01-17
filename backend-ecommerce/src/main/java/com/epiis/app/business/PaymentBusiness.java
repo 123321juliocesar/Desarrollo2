@@ -91,7 +91,7 @@ public class PaymentBusiness {
 
             // Configurar URLs de retorno
             String finalReturnUrl = returnUrl != null ? returnUrl : "https://sumaqsport.netlify.app/payment/success";
-            String finalCancelUrl = cancelUrl != null ? cancelUrl : "https://sumaqsport.netlify.app/cancel";
+            String finalCancelUrl = cancelUrl != null ? cancelUrl : "https://sumaqsport.netlify.app/payment/cancel";
 
             // Convertir montos a USD usando CurrencyBusiness
             BigDecimal totalUsd = currencyBusiness.convertPenToUsd(order.getTotalAmount());

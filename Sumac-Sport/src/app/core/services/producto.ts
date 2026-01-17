@@ -9,13 +9,13 @@ import { ProductListResponse, ProductDetailResponse } from '../models/api-respon
   providedIn: 'root',
 })
 export class ProductoService {
-  private apiURL = 'http://localhost:8080/product';
+  private apiURL = 'https://desarrollo2-1.onrender.com/product';
 
   constructor(private http: HttpClient) { }
 
   /*obtenerProductos(): Observable<ProductListResponse> {
     return this.http.get<ProductListResponse>(`${this.apiURL}/list`); */
-    
+
   obtenerProductos(filters?: {
     search?: string;
     idCategory?: string;
