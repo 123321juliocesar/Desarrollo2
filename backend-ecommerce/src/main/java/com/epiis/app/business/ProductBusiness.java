@@ -430,12 +430,26 @@ public class ProductBusiness {
 
             // Filtro: Categoría
             if (idCategory != null && !idCategory.trim().isEmpty()) {
-                predicates.add(criteriaBuilder.equal(root.get("category").get("idCategory"), idCategory));
+                //predicates.add(criteriaBuilder.equal(root.get("category").get("idCategory"), idCategory));
+                 String[] categoryIds = idCategory.split(",");
+                var categoryPredicates = new java.util.ArrayList<jakarta.persistence.criteria.Predicate>();
+                for (String catId : categoryIds) {
+                    categoryPredicates.add(criteriaBuilder.equal(root.get("category").get("idCategory"), catId.trim()));
+                }
+                predicates.add(criteriaBuilder.or(categoryPredicates.toArray(new jakarta.persistence.criteria.Predicate[0])));
+            
             }
 
-            // Filtro: Marca
+            // Filtro: Marca (Soporte para múltiples marcas separadas por coma)
             if (idBrand != null && !idBrand.trim().isEmpty()) {
-                predicates.add(criteriaBuilder.equal(root.get("brand").get("idBrand"), idBrand));
+                //predicates.add(criteriaBuilder.equal(root.get("brand").get("idBrand"), idBrand));
+                String[] brandIds = idBrand.split(",");
+                var brandPredicates = new java.util.ArrayList<jakarta.persistence.criteria.Predicate>();
+                for (String brandId : brandIds) {
+                    brandPredicates.add(criteriaBuilder.equal(root.get("brand").get("idBrand"), brandId.trim()));
+                }
+                predicates.add(criteriaBuilder.or(brandPredicates.toArray(new jakarta.persistence.criteria.Predicate[0])));
+            
             }
 
             // Filtro: Rango de precios

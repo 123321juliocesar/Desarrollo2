@@ -104,7 +104,7 @@ public class ProductController {
             @RequestBody RequestProductUpdate request) {
         ResponseProduct response = new ResponseProduct();
 
-        String result = this.productBusiness.update(id, request.getDto().getProduct(), request.getDto().getVariant());
+        String result = this.productBusiness.update(id, request.getDto().getProduct(), request.getDto().getVariants());
 
         if (result.equals("Producto actualizado correctamente")) {
             response.success();

@@ -28,6 +28,13 @@ import com.epiis.app.repository.OrderItemRepository;
 import com.epiis.app.repository.OrderRepository;
 import com.epiis.app.repository.UserRepository;
 
+import java.util.Map;
+import java.util.HashMap;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 @Service
 public class OrderBusiness {
 
@@ -165,7 +172,8 @@ public class OrderBusiness {
         }
 
         // Vaciar carrito
-        cartItemRepository.deleteByCart_IdCart(cart.getIdCart());
+        //No vaciamos el carrito aquí (Ghost Cart Strategy).
+        //cartItemRepository.deleteByCart_IdCart(cart.getIdCart());
         cart.setUpdatedAt(new Timestamp(new Date().getTime()));
         cartRepository.save(cart);
 
@@ -217,6 +225,60 @@ public class OrderBusiness {
         return orders.stream()
                 .map(this::convertToOrderResponse)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Obtiene todas las órdenes paginadas (para admin), con filtro opcional de
+     * estado
+     * 
+     * @param page   - Número de página (0-based)
+     * @param size   - Tamaño de página
+     * @param status - Estado para filtrar (opcional, "all" para todos)
+     * @return Map con contenido y metadatos de paginación
+     */
+    @Transactional(readOnly = true)
+    public Map<String, Object> getAllOrdersPaginated(int page, int size, String status) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "orderDate"));
+        Page<Order> orderPage;
+
+        if (status != null && !status.equals("all") && !status.isEmpty()) {
+            orderPage = orderRepository.findByStatus(status, pageable);
+        } else {
+            //orderPage = orderRepository.findAll(pageable);
+            // Default view: Exclude 'pending' status so Admin only sees actionable orders.
+            // This prevents "empty pages" caused by pages full of hidden pending orders.
+            orderPage = orderRepository.findByStatusNot("pending", pageable);
+        }
+
+        List<DtoOrderResponse> content = orderPage.getContent().stream()
+                .map(this::convertToOrderResponse)
+                .collect(Collectors.toList());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", content);
+        response.put("currentPage", orderPage.getNumber());
+        response.put("totalItems", orderPage.getTotalElements());
+        response.put("totalPages", orderPage.getTotalPages());
+        response.put("size", orderPage.getSize());
+
+        return response;
+    }
+
+    /**
+     * Elimina una orden (solo si está cancelada)
+     * 
+     * @param idOrder - ID de la orden
+     */
+    @Transactional
+    public void deleteOrder(String idOrder) {
+        Order order = orderRepository.findByIdOrder(idOrder)
+                .orElseThrow(() -> new RuntimeException("Orden no encontrada"));
+
+        if (!"cancelled".equalsIgnoreCase(order.getStatus())) {
+            throw new RuntimeException("Solo se pueden eliminar órdenes con estado 'cancelado'");
+        }
+
+        orderRepository.delete(order);
     }
 
     /**

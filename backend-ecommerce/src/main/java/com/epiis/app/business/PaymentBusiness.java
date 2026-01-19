@@ -19,6 +19,8 @@ import com.epiis.app.entity.Order;
 import com.epiis.app.entity.OrderItem;
 import com.epiis.app.entity.Payment;
 import com.epiis.app.entity.ProductVariant;
+import com.epiis.app.repository.CartItemRepository;
+import com.epiis.app.repository.CartRepository;
 import com.epiis.app.repository.OrderItemRepository;
 import com.epiis.app.repository.OrderRepository;
 import com.epiis.app.repository.PaymentRepository;
@@ -54,6 +56,12 @@ public class PaymentBusiness {
 
     @Autowired
     private ProductVariantRepository productVariantRepository;
+
+    @Autowired
+    private CartItemRepository cartItemRepository;
+
+    @Autowired
+    private CartRepository cartRepository;
 
     /**
      * Crea una orden de pago en PayPal
@@ -256,6 +264,19 @@ public class PaymentBusiness {
                     variant.setUpdatedAt(new Timestamp(new Date().getTime()));
                     productVariantRepository.save(variant);
                 }
+            }
+
+            // LIMPIAR CARRITO ("GHOST CART" Implementation)
+            // Buscar carrito del usuario y limpiar items
+            try {
+                java.util.Optional<com.epiis.app.entity.Cart> cart = cartRepository
+                        .findByUser_IdUser(order.getUser().getIdUser());
+                if (cart.isPresent()) {
+                    cartItemRepository.deleteByCart_IdCart(cart.get().getIdCart());
+                }
+            } catch (Exception e) {
+                // No fallar el pago si falla la limpieza del carrito, pero loguear
+                System.err.println("Error cleaning cart after payment: " + e.getMessage());
             }
 
             // Construir respuesta

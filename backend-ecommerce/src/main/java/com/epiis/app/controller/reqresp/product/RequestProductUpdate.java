@@ -18,6 +18,6 @@ public class RequestProductUpdate {
     @Setter
     public static class Dto {
         private DtoProduct product;
-        private List<DtoProductVariant> variant;
+        private List<DtoProductVariant> variants;
     }
 }

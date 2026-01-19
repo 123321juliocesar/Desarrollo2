@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -131,6 +132,44 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
     }
+
+    /**
+     * Obtiene todas las órdenes paginadas (solo admin)
+     * GET /api/orders/admin/list?page=0&size=5&status=all
+     */
+    @GetMapping("/admin/list")
+    public ResponseEntity<?> getAllOrdersPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "all") String status) {
+        try {
+            Map<String, Object> response = orderBusiness.getAllOrdersPaginated(page, size, status);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Error al obtener las órdenes: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
+    }
+
+    /**
+     * Elimina una orden (solo si está cancelada)
+     * DELETE /api/orders/{idOrder}
+     */
+    @DeleteMapping("/{idOrder}")
+    public ResponseEntity<?> deleteOrder(@PathVariable String idOrder) {
+        try {
+            orderBusiness.deleteOrder(idOrder);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Orden eliminada correctamente");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Error al eliminar la orden: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
+    }
+
 
     /**
      * Obtiene órdenes por estado
